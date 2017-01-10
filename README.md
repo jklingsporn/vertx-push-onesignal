@@ -25,14 +25,13 @@ More examples can be found in the [``Examples``](https://github.com/jklingsporn/
 Sure you can do this. What this library gives you on top is validation. When writing your own request it is absolutely
 fine to both target users by segments and filters. This library makes sure that you only use one targeting parameter.
 Also the content of a message can either be defined by using templates _or_ setting the content like in the example above, this
-library only lets you set on of the ways to deliver messages.
+library lets you set exactly one way to deliver messages.
 
 **Filters**
 
 Targeting users using filters can be tricky when writing your own CURL call. You have to remember which relation can be used
-for which filter. This library only lets you use the relations that are allowed for a given filter.
+for which filter. This library only lets you use the relations that are allowed for a given filter:
 
-Example:
 ```
 //using a filter to target only users that haven't used the app for 24 hours
 Filters.lastSession().greater(24);  //OK
@@ -48,5 +47,5 @@ Filters.lastSession().greater(24).or(Filters.sessionCount().equal(1));
 To use this library you need to create a [OneSignal](https://onesignal.com/)-account and configure your clients (web or mobile) accordingly.
 
 # disclaimer
-The author is not linked to the companies behind OneSignal or Vertx. This library also comes without any warranty - just take
+The author has no connection to the companies behind OneSignal or Vertx. This library also comes without any warranty - just take
 it or leave it.
