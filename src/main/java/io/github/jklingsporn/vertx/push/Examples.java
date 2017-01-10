@@ -42,7 +42,7 @@ public class Examples {
                 withContent(new JsonObject().put("en", "English Content.").put("de","Deutscher Inhalt.")).
                     //add a heading
                     withHeadings(new JsonObject().put("en","Awesome App").put("de","Super App")).
-                //target the audience using filters (e.g. people having used your app only once and haven't logged in since 24 hours)
+                //target the audience using filters (e.g. people having used your app only once or haven't logged in since 24 hours)
                 targetByFilter(Filters.lastSession().greater(24).or(Filters.sessionCount().equal(1))).
                 //but only ios users!
                 addOptions(new SendOptions().setPlatform(EnumSet.of(SendOptions.Platform.IOS))).
