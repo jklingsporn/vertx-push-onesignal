@@ -9,6 +9,7 @@ import java.util.Set;
  * Specify further options that are added to the JSON-data. Some common parameters are added as
  * setters others can be added using the <code>setCustom</code>-method. This class is backed by
  * a <code>JsonObject</code> which you can also pass in the constructor.
+ * @see <a href="https://documentation.onesignal.com/reference#section-example-code-create-notification">OneSignal Documentation</a>
  */
 public class SendOptions {
 
