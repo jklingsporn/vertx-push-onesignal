@@ -39,7 +39,7 @@ public class Examples {
     public static void exampleTwo(){
         PushClient.create(Vertx.vertx(), "YOUR_APP_ID", "YOUR_API_KEY").
                 //setup the content of the message on the serverside
-                withContent(new JsonObject().put("en", "English Content.").put("de","Deutscher Titel.")).
+                withContent(new JsonObject().put("en", "English Content.").put("de","Deutscher Inhalt.")).
                     //add a heading
                     withHeadings(new JsonObject().put("en","Awesome App").put("de","Super App")).
                 //target the audience using filters (e.g. people having used your app only once and haven't logged in since 24 hours)

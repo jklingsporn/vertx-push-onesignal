@@ -1,12 +1,12 @@
 # vertx-push
 Send push notifications asynchronously in your [vertx](http://vertx.io/) application with [OneSignal](https://onesignal.com/).
 
-#### example
+#### Example
 ```
 //Create a client. You get the APP_ID and API_KEY from the OneSignal-dashboard
 PushClient.create(Vertx.vertx(), "YOUR_APP_ID", "YOUR_API_KEY").
                 //setup the content of the message on the serverside
-                withContent(new JsonObject().put("en", "English Content.").put("de","Deutscher Titel.")).
+                withContent(new JsonObject().put("en", "English Content.").put("de","Deutscher Inhalt.")).
                 //all users should receive this
                 targetBySegments(Segments.ALL).
                 sendNow(
@@ -21,7 +21,7 @@ PushClient.create(Vertx.vertx(), "YOUR_APP_ID", "YOUR_API_KEY").
 
 More examples can be found in the ``Examples``-class.
 
-#### why would I use this library over writing my own CURL?
+#### Why would I use this library over writing my own CURL?
 Sure you can do this. What this library gives you on top is validation. When writing your own request it is absolutely
 fine to both target users by segments and filters. This library makes sure that you only use one targeting parameter.
 Also the content of a message can either be defined by using templates _or_ setting the content like in the example above, this
