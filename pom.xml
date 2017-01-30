@@ -6,7 +6,7 @@
 
     <packaging>jar</packaging>
     <groupId>io.github.jklingsporn</groupId>
-    <artifactId>vertx-push</artifactId>
+    <artifactId>vertx-push-onesignal</artifactId>
     <version>1.0.0</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <properties>
@@ -15,7 +15,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-    <url>https://github.com/jklingsporn/vertx-push</url>
+    <url>https://github.com/jklingsporn/vertx-push-onesignal</url>
     <developers>
         <developer>
             <name>Jens Klingpsorn</name>
@@ -26,7 +26,7 @@
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>https://raw.githubusercontent.com/jklingsporn/vertx-push/master/LICENSE</url>
+            <url>https://raw.githubusercontent.com/jklingsporn/vertx-push-onesignal/master/LICENSE</url>
         </license>
     </licenses>
 
@@ -104,9 +104,9 @@
         </profile>
     </profiles>
     <scm>
-        <connection>scm:git:git://github.com/jklingsporn/vertx-jooq.git</connection>
-        <developerConnection>scm:git:git@github.com/jklingsporn/vertx-jooq.git</developerConnection>
-        <url>https://github.com/jklingsporn/vertx-jooq</url>
+        <connection>scm:git:git://github.com/jklingsporn/vertx-push-onesignal.git</connection>
+        <developerConnection>scm:git:git@github.com/jklingsporn/vertx-push-onesignal.git</developerConnection>
+        <url>https://github.com/jklingsporn/vertx-push-onesignal</url>
     </scm>
     <distributionManagement>
         <repository>
