@@ -1,4 +1,4 @@
-# vertx-push
+# vertx-push-onesignal
 Send push notifications asynchronously in your [vertx](http://vertx.io/) application with [OneSignal](https://onesignal.com/).
 
 #### Example
