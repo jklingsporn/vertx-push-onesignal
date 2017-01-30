@@ -29,7 +29,7 @@
             <url>https://raw.githubusercontent.com/jklingsporn/vertx-push-onesignal/master/LICENSE</url>
         </license>
     </licenses>
-
+    <description>Send push notifications asynchronously in your Vertx application with OneSignal.</description>
 
     <dependencies>
         <dependency>

@@ -46,6 +46,15 @@ Filters.lastSession().greater(24).or(Filters.sessionCount().equal(1));
 # requirements
 To use this library you need to create a [OneSignal](https://onesignal.com/)-account and configure your clients (web or mobile) accordingly.
 
+# maven
+```
+<dependency>
+  <groupId>io.github.jklingsporn</groupId>
+  <artifactId>vertx-push-onesignal</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
 # disclaimer
 The author has no connection to the companies behind OneSignal or Vertx. This library also comes without any warranty - just take
 it or leave it.
