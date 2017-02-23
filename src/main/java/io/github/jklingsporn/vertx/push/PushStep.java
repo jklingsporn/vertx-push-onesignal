@@ -5,7 +5,7 @@ import io.vertx.core.json.JsonObject;
 /**
  * Created by jensklingsporn on 03.01.17.
  */
-interface PushStep {
+public interface PushStep {
 
     JsonObject container();
 

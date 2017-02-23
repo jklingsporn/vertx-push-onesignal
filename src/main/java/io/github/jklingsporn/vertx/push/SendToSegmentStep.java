@@ -5,7 +5,7 @@ import io.vertx.core.json.JsonArray;
 /**
  * Created by jensklingsporn on 03.01.17.
  */
-interface SendToSegmentStep extends SendWithOptionsStep {
+public interface SendToSegmentStep extends SendWithOptionsStep {
 
     /**
      * Targeting the audience using segments (which can be set up in the OneSignal dashboard).

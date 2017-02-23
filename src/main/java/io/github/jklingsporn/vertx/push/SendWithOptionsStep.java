@@ -3,7 +3,7 @@ package io.github.jklingsporn.vertx.push;
 /**
  * Created by jensklingsporn on 03.01.17.
  */
-interface SendWithOptionsStep extends SendStep{
+public interface SendWithOptionsStep extends SendStep{
 
     /**
      * Specify further options. Some common options are directly included in the <code>SendOptions</code> class others

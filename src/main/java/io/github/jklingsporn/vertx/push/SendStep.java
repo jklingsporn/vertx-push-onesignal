@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 /**
  * Created by jensklingsporn on 03.01.17.
  */
-interface SendStep extends PushStep{
+public interface SendStep extends PushStep{
 
     /**
      *

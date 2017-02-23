@@ -1,5 +1,8 @@
-package io.github.jklingsporn.vertx.push;
+package io.github.jklingsporn.vertx.push.examples;
 
+import io.github.jklingsporn.vertx.push.PushClient;
+import io.github.jklingsporn.vertx.push.Segments;
+import io.github.jklingsporn.vertx.push.SendOptions;
 import io.github.jklingsporn.vertx.push.filters.Filters;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;

@@ -6,7 +6,7 @@ import io.vertx.core.json.JsonArray;
 /**
  * Created by jensklingsporn on 03.01.17.
  */
-interface PushToDestinationStep extends PushStep {
+public interface PushToDestinationStep extends PushStep {
 
 
 
