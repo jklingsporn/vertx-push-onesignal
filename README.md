@@ -19,7 +19,7 @@ PushClient.create(Vertx.vertx(), "YOUR_APP_ID", "YOUR_API_KEY").
                         });
 ```
 
-More examples can be found in the [``Examples``](https://github.com/jklingsporn/vertx-push/blob/master/src/main/java/io/github/jklingsporn/vertx/push/Examples.java)-class.
+More examples can be found in the [``Examples``](https://github.com/jklingsporn/vertx-push/blob/master/src/main/java/io/github/jklingsporn/vertx/push/examples/Examples.java)-class.
 
 #### Why would I use this library over writing my own CURL?
 Sure you can do this. What this library gives you on top is validation. When writing your own request it is absolutely
