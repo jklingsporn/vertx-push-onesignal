@@ -32,7 +32,7 @@ public interface PushToDestinationStep extends PushStep {
      * Targeting the audience using OneSignal-playerIds.
      * @param playerIds a list of playerIds
      * @return a SendWithOptionsStep
-     * @see <a href="https://documentation.onesignal.com/reference#section-send-to-users-based-on-filters">Notifications using playerIds</a>
+     * @see <a href="https://documentation.onesignal.com/reference#section-send-to-specific-devices">Notifications using playerIds</a>
      */
     SendWithOptionsStep targetByPlayerIds(JsonArray playerIds);
 }

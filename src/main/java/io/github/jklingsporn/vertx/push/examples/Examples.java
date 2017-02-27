@@ -5,6 +5,7 @@ import io.github.jklingsporn.vertx.push.Segments;
 import io.github.jklingsporn.vertx.push.SendOptions;
 import io.github.jklingsporn.vertx.push.filters.Filters;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import java.time.Instant;
@@ -78,4 +79,29 @@ public class Examples {
                             System.exit(0);
                         });
     }
+
+    public static void exampleFour(){
+        PushClient.create(Vertx.vertx(), "YOUR_APP_ID", "YOUR_API_KEY").
+                        //setup the content of the message on the serverside
+                        withContent(new JsonObject().put("en", "English Content.").put("de","Deutscher Inhalt.")).
+                        //add a heading
+                        withHeadings(new JsonObject().put("en","Awesome App").put("de","Super App")).
+                        //target the audience using OneSignal playerID(s)
+                        targetByPlayerIds(new JsonArray().add("1dd608f2-c6a1-11e3-851d-000c2940e62c")).
+                        //but only ios users!
+                        addOptions(new SendOptions().setPlatform(EnumSet.of(SendOptions.Platform.IOS))).
+                        //and wait another minute until they receive it
+                        sendAfter(
+                                ZonedDateTime.ofInstant(Instant.now().plus(1, ChronoUnit.MINUTES), ZoneId.systemDefault()),
+                                h -> {
+                                    if (h.succeeded()) {
+                                        System.err.println(h.result().encodePrettily());
+                                    } else {
+                                        h.cause().printStackTrace();
+                                    }
+                                    System.exit(0);
+                                });
+    }
+
+
 }
