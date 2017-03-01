@@ -9,7 +9,7 @@ public class Segments {
 
     public static final JsonArray ALL = new JsonArray();
     static{
-        ALL.add("ALL");
+        ALL.add("All");
     }
 
     private Segments() {
