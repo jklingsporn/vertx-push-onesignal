@@ -8,6 +8,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.RequestOptions;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonObject;
 
@@ -22,17 +23,23 @@ class OneSignalPushClient implements PushClient{
     private final HttpClient httpClient;
     private final String appId;
     private final String restApiKey;
-    private String host = DEFAULT_HOST;
+    private final String host = DEFAULT_HOST;
+    private final RequestOptions requestOptions;
 
 
     OneSignalPushClient(Vertx vertx, String appId, String restApiKey) {
-        this.appId = appId;
-        this.restApiKey = restApiKey;
-        this.httpClient = vertx.createHttpClient(new HttpClientOptions().setSsl(true).setVerifyHost(false));
+        this(vertx.createHttpClient(new HttpClientOptions().setSsl(true).setVerifyHost(false)), appId, restApiKey);
     }
 
-    void sendRequest(String requestURI, JsonObject content,Handler<AsyncResult<JsonObject>> resultHandler) {
-        this.httpClient.post(PORT, host, requestURI, response -> {
+    OneSignalPushClient(HttpClient httpClient, String appId, String restApiKey) {
+        this.appId = appId;
+        this.restApiKey = restApiKey;
+        this.httpClient = httpClient;
+        this.requestOptions = new RequestOptions().setHost(host).setPort(PORT).setSsl(true).setURI(Endpoints.PUSH);
+    }
+
+    void sendRequest(JsonObject content,Handler<AsyncResult<JsonObject>> resultHandler) {
+        this.httpClient.post(requestOptions, response -> {
             response.bodyHandler(body -> {
                 try {
                     JsonObject responseBody = body.toJsonObject();

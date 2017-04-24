@@ -26,11 +26,11 @@ class SendWithOptionsStepImpl extends AbstractPushStep implements SendWithOption
 
     @Override
     public void sendNow(Handler<AsyncResult<JsonObject>> resultHandler) {
-        ((OneSignalPushClient) client()).sendRequest(Endpoints.PUSH, container(),resultHandler);
+        ((OneSignalPushClient) client()).sendRequest(container(),resultHandler);
     }
 
     @Override
     public void sendAfter(ZonedDateTime afterDate, Handler<AsyncResult<JsonObject>> resultHandler) {
-        ((OneSignalPushClient) client()).sendRequest(Endpoints.PUSH, container().put("send_after", afterDate.format(FORMATTER)),resultHandler);
+        ((OneSignalPushClient) client()).sendRequest(container().put("send_after", afterDate.format(FORMATTER)),resultHandler);
     }
 }

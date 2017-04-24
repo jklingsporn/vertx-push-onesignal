@@ -1,6 +1,7 @@
 package io.github.jklingsporn.vertx.push;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -12,10 +13,20 @@ public interface PushClient {
      * @param vertx your Vertx instance
      * @param appId your OneSignal AppId
      * @param restApiKey your OneSignal API-Key
-     * @return
+     * @return a PushClient
      */
     static PushClient create(Vertx vertx, String appId, String restApiKey){
         return new OneSignalPushClient(vertx,appId,restApiKey);
+    }
+
+    /**
+     * @param httpClient the HttpClient to use for calling the OneSignal-API.
+     * @param appId your OneSignal AppId
+     * @param restApiKey your OneSignal API-Key
+     * @return a PushClient
+     */
+    static PushClient create(HttpClient httpClient, String appId, String restApiKey){
+        return new OneSignalPushClient(httpClient,appId,restApiKey);
     }
 
     /**
