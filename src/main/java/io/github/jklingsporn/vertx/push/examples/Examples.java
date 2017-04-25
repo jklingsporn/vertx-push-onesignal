@@ -5,8 +5,12 @@ import io.github.jklingsporn.vertx.push.Segments;
 import io.github.jklingsporn.vertx.push.SendOptions;
 import io.github.jklingsporn.vertx.push.filters.Filters;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.net.ProxyOptions;
+import io.vertx.core.net.ProxyType;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -101,6 +105,28 @@ public class Examples {
                                     }
                                     System.exit(0);
                                 });
+    }
+
+    public static void exampleHttpClientProxy(){
+        String proxyHost = "yourProxyHost";
+        int proxyPort = 123;
+        HttpClientOptions options = new HttpClientOptions().setSsl(true).setTrustAll(true);
+        HttpClient client = Vertx.vertx().createHttpClient(options.setProxyOptions(new ProxyOptions().setHost(proxyHost).setPort(proxyPort).setType(ProxyType.HTTP)));
+        PushClient.create(client, "YOUR_APP_ID", "YOUR_API_KEY").
+                //setup the content of the message on the serverside
+                        withContent(new JsonObject().put("en", "English Content.").put("de","Deutscher Inhalt.")).
+                //target the audience using OneSignal playerID(s)
+                        targetByPlayerIds(new JsonArray().add("1dd608f2-c6a1-11e3-851d-000c2940e62c")).
+                //and wait another minute until they receive it
+                        sendNow(
+                        h -> {
+                            if (h.succeeded()) {
+                                System.err.println(h.result().encodePrettily());
+                            } else {
+                                h.cause().printStackTrace();
+                            }
+                            System.exit(0);
+                        });
     }
 
 
