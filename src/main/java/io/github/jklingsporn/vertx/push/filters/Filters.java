@@ -1,5 +1,10 @@
 package io.github.jklingsporn.vertx.push.filters;
 
+import io.github.jklingsporn.vertx.push.filters.relations.EqualRelation;
+import io.vertx.core.impl.Arguments;
+
+import java.util.Objects;
+
 /**
  * Created by jensklingsporn on 04.01.17.
  */
@@ -108,6 +113,18 @@ public class Filters {
         FilterImpl filter = new FilterImpl("email");
         filter.content().put("value",email);
         return filter;
+    }
+
+    /**
+     * A filter based on a country.
+     * @param country
+     * @return a Filter
+     * @see <a href="https://documentation.onesignal.com/reference#section-send-to-users-based-on-filters">Notification filters</a>
+     */
+    public static Filter country(String country){
+        Objects.requireNonNull(country);
+        Arguments.require(country.length() != 2, "country must have exactly two digits.");
+        return ((EqualRelation<String>) () -> "country").equal(country);
     }
 
     private static class TagFilterImpl implements TagFilter{
