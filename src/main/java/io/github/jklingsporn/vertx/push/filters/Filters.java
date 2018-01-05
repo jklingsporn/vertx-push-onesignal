@@ -1,7 +1,10 @@
 package io.github.jklingsporn.vertx.push.filters;
 
+import io.github.jklingsporn.vertx.push.examples.Examples;
 import io.github.jklingsporn.vertx.push.filters.relations.EqualRelation;
 import io.vertx.core.impl.Arguments;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 import java.util.Objects;
 
@@ -91,21 +94,21 @@ public class Filters {
 
     /**
      * A filter based on a user's location.
-     * @param radiusInMeters
-     * @param latitude
-     * @param longitude
+     * @param radiusInMeters not null
+     * @param latitude not null
+     * @param longitude not null
      * @return a Filter
      * @see <a href="https://documentation.onesignal.com/reference#section-send-to-users-based-on-filters">Notification filters</a>
      */
     public static Filter location(Integer radiusInMeters, String latitude, String longitude){
         FilterImpl filter = new FilterImpl("location");
-        filter.content().put("radius",radiusInMeters).put("lat",latitude).put("long",longitude);
+        filter.content().put("radius",radiusInMeters.toString()).put("lat",latitude).put("long",longitude);
         return filter;
     }
 
     /**
      * A filter based on an email address.
-     * @param email
+     * @param email not null
      * @return a Filter
      * @see <a href="https://documentation.onesignal.com/reference#section-send-to-users-based-on-filters">Notification filters</a>
      */
@@ -117,14 +120,51 @@ public class Filters {
 
     /**
      * A filter based on a country.
-     * @param country
+     * @param country not null
      * @return a Filter
      * @see <a href="https://documentation.onesignal.com/reference#section-send-to-users-based-on-filters">Notification filters</a>
      */
     public static Filter country(String country){
         Objects.requireNonNull(country);
-        Arguments.require(country.length() != 2, "country must have exactly two digits.");
+        Arguments.require(country.length() == 2, "country must have exactly two digits.");
         return ((EqualRelation<String>) () -> "country").equal(country);
+    }
+
+    /**
+     * A filter that does nothing. It can be used to build a Filter-chain based on a Collection of tag values.
+     * @return a Filter
+     * @see Examples#exampleFive()
+     */
+    public static Filter noop(){
+        return NoopFilter.getInstance();
+    }
+
+    private static class NoopFilter implements Filter{
+
+        private static NoopFilter INSTANCE;
+        public static NoopFilter getInstance() {
+            return INSTANCE == null ? INSTANCE = new NoopFilter() : INSTANCE;
+        }
+
+        @Override
+        public Filter and(Filter other) {
+            return other;
+        }
+
+        @Override
+        public Filter or(Filter other) {
+            return other;
+        }
+
+        @Override
+        public JsonArray asJsonArray() {
+            throw new UnsupportedOperationException("noop");
+        }
+
+        @Override
+        public JsonObject content() {
+            throw new UnsupportedOperationException("noop");
+        }
     }
 
     private static class TagFilterImpl implements TagFilter{

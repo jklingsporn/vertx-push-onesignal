@@ -3,6 +3,7 @@ package io.github.jklingsporn.vertx.push.examples;
 import io.github.jklingsporn.vertx.push.PushClient;
 import io.github.jklingsporn.vertx.push.Segments;
 import io.github.jklingsporn.vertx.push.SendOptions;
+import io.github.jklingsporn.vertx.push.filters.Filter;
 import io.github.jklingsporn.vertx.push.filters.Filters;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -16,6 +17,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 
 /**
@@ -51,7 +54,7 @@ public class Examples {
                     //add a heading
                     withHeadings(new JsonObject().put("en","Awesome App").put("de","Super App")).
                 //target the audience using filters (e.g. people having used your app only once or haven't logged in since 24 hours)
-                targetByFilter(Filters.lastSession().greater(24).or(Filters.sessionCount().equal(1))).
+                targetByFilter(Filters.lastSession().greater(24f).or(Filters.sessionCount().equal(1))).
                 //but only ios users!
                 addOptions(new SendOptions().setPlatform(EnumSet.of(SendOptions.Platform.IOS))).
                 //and wait another minute until they receive it
@@ -105,6 +108,35 @@ public class Examples {
                                     }
                                     System.exit(0);
                                 });
+    }
+
+    public static void exampleFive(){
+        //chain tag-filters using noop
+        Collection<String> tagValues = Arrays.asList("foo","bar","baz");
+        Filter filter = Filters.noop();
+        for (String tagValue : tagValues) {
+            filter = filter.or(Filters.tag("MY_USER_TAG").equal(tagValue));
+        }
+        PushClient.create(Vertx.vertx(), "YOUR_APP_ID", "YOUR_API_KEY").
+                        //setup the content of the message on the serverside
+                        withContent(new JsonObject().put("en", "English Content.").put("de", "Deutscher Inhalt.")).
+                        //add a heading
+                        withHeadings(new JsonObject().put("en", "Awesome App").put("de", "Super App")).
+
+                        targetByFilter(filter).
+                        //but only ios users!
+                        addOptions(new SendOptions().setPlatform(EnumSet.of(SendOptions.Platform.IOS))).
+                        //and wait another minute until they receive it
+                        sendAfter(
+                        ZonedDateTime.ofInstant(Instant.now().plus(1, ChronoUnit.MINUTES), ZoneId.systemDefault()),
+                        h -> {
+                            if (h.succeeded()) {
+                                System.err.println(h.result().encodePrettily());
+                            } else {
+                                h.cause().printStackTrace();
+                            }
+                            System.exit(0);
+                        });
     }
 
     public static void exampleHttpClientProxy(){
