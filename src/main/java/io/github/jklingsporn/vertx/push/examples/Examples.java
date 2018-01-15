@@ -1,6 +1,7 @@
 package io.github.jklingsporn.vertx.push.examples;
 
 import io.github.jklingsporn.vertx.push.PushClient;
+import io.github.jklingsporn.vertx.push.PushClientOptions;
 import io.github.jklingsporn.vertx.push.Segments;
 import io.github.jklingsporn.vertx.push.SendOptions;
 import io.github.jklingsporn.vertx.push.filters.Filter;
@@ -129,6 +130,34 @@ public class Examples {
                         //and wait another minute until they receive it
                         sendAfter(
                         ZonedDateTime.ofInstant(Instant.now().plus(1, ChronoUnit.MINUTES), ZoneId.systemDefault()),
+                        h -> {
+                            if (h.succeeded()) {
+                                System.err.println(h.result().encodePrettily());
+                            } else {
+                                h.cause().printStackTrace();
+                            }
+                            System.exit(0);
+                        });
+    }
+
+    /**
+     * Demonstrates usage of new PushClientOptions and the <code>ignoreAllPlayersAreNotSubscribed</code> property. When
+     * set to <code>true</code> it will silently ignore the "All included players are not subscribed"-error by OneSignal
+     * instead of creating an expensive OneSignalException.
+     * @since 1.7
+     * @see <a href="https://documentation.onesignal.com/reference#section-results-create-notification">Notification results</a>
+     */
+    public static void exampleSix(){
+        PushClient.create(Vertx.vertx(), new PushClientOptions()
+                .setAppId("YOUR_APP_ID")
+                .setRestApiKey("YOUR_API_KEY")
+                .setIgnoreAllPlayersAreNotSubscribed(true) //
+        ).
+                //setup a template on the OneSignal-Dashboard and use it here
+                        withTemplate("someTemplateId").
+                //all users should receive this
+                        targetBySegments(Segments.ALL).
+                sendNow(
                         h -> {
                             if (h.succeeded()) {
                                 System.err.println(h.result().encodePrettily());

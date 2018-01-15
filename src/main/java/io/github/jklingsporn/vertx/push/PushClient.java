@@ -14,9 +14,10 @@ public interface PushClient {
      * @param appId your OneSignal AppId
      * @param restApiKey your OneSignal API-Key
      * @return a PushClient
+     * @deprecated Consider using PushClient#create(Vertx,PushClientOptions) instead
      */
     static PushClient create(Vertx vertx, String appId, String restApiKey){
-        return new OneSignalPushClient(vertx,appId,restApiKey);
+        return new OneSignalPushClient(vertx, new PushClientOptions().setAppId(appId).setRestApiKey(restApiKey));
     }
 
     /**
@@ -24,9 +25,30 @@ public interface PushClient {
      * @param appId your OneSignal AppId
      * @param restApiKey your OneSignal API-Key
      * @return a PushClient
+     * @deprecated Consider using PushClient#create(HttpClient,PushClientOptions) instead
      */
     static PushClient create(HttpClient httpClient, String appId, String restApiKey){
-        return new OneSignalPushClient(httpClient,appId,restApiKey);
+        return new OneSignalPushClient(httpClient, new PushClientOptions().setAppId(appId).setRestApiKey(restApiKey));
+    }
+
+    /**
+     * @param httpClient the HttpClient to use for calling the OneSignal-API.
+     * @param pushClientOptions the options
+     * @return a PushClient
+     * @since 1.7
+     */
+    static PushClient create(HttpClient httpClient, PushClientOptions pushClientOptions){
+        return new OneSignalPushClient(httpClient, pushClientOptions);
+    }
+
+    /**
+     * @param vertx your Vertx instance
+     * @param pushClientOptions the options
+     * @return a PushClient
+     * @since 1.7
+     */
+    static PushClient create(Vertx vertx, PushClientOptions pushClientOptions){
+        return new OneSignalPushClient(vertx, pushClientOptions);
     }
 
     /**
