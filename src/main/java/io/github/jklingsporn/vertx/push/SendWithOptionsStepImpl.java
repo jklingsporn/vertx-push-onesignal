@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
  */
 class SendWithOptionsStepImpl extends AbstractPushStep implements SendWithOptionsStep{
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:ss O");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss O");
 
     SendWithOptionsStepImpl(PushStep parent) {
         super(parent);
