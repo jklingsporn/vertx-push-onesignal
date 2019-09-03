@@ -6,12 +6,12 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.RequestOptions;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 
 import java.util.Objects;
 
@@ -23,42 +23,48 @@ class OneSignalPushClient implements PushClient{
     private static final int PORT = 443;
     private static final String DEFAULT_HOST = "onesignal.com";
 
-    private final HttpClient httpClient;
+    private final WebClient webClient;
     private final PushClientOptions pushClientOptions;
-    private final String host = DEFAULT_HOST;
-    private final RequestOptions requestOptions;
-
 
     OneSignalPushClient(Vertx vertx, PushClientOptions pushClientOptions) {
-        this(vertx.createHttpClient(new HttpClientOptions().setSsl(true).setVerifyHost(false)), pushClientOptions);
+        this(WebClient.create(vertx, new WebClientOptions().setDefaultHost(DEFAULT_HOST).setDefaultPort(PORT).setSsl(true).setVerifyHost(false)), pushClientOptions);
     }
 
     OneSignalPushClient(HttpClient httpClient, PushClientOptions pushClientOptions) {
+        this(WebClient.wrap(httpClient), pushClientOptions);
+    }
+
+    OneSignalPushClient(WebClient webClient, PushClientOptions pushClientOptions) {
         Objects.requireNonNull(pushClientOptions.getAppId());
         Objects.requireNonNull(pushClientOptions.getRestApiKey());
-        this.httpClient = httpClient;
+        this.webClient = webClient;
         this.pushClientOptions = pushClientOptions;
-        this.requestOptions = new RequestOptions().setHost(host).setPort(PORT).setSsl(true).setURI(Endpoints.PUSH);
     }
 
     void sendRequest(JsonObject content,Handler<AsyncResult<JsonObject>> resultHandler) {
-        this.httpClient.post(requestOptions, response -> {
-            response.bodyHandler(body -> {
-                try {
-                    JsonObject responseBody = body.toJsonObject();
-                    JsonArray errors = responseBody.getJsonArray("errors");
-                    if (errors !=null && !isIgnoreAllPlayersAreNotSubscribed(responseBody)) {
-                        resultHandler.handle(Future.failedFuture(new OneSignalResponseException(errors.encodePrettily())));
-                    }else if (response.statusCode() == HttpResponseStatus.OK.code()) {
-                        resultHandler.handle(Future.succeededFuture(responseBody));
-                    } else {
-                        resultHandler.handle(Future.failedFuture(new OneSignalResponseException(responseBody.encodePrettily())));
+        this.webClient
+                .post(Endpoints.PUSH)
+                .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/json")
+                .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Basic " + pushClientOptions.getRestApiKey())
+                .sendJsonObject(content,response -> {
+                    if(response.succeeded()){
+                        try {
+                            JsonObject responseBody = response.result().bodyAsJsonObject();
+                            JsonArray errors = responseBody.getJsonArray("errors");
+                            if (errors != null && !isIgnoreAllPlayersAreNotSubscribed(responseBody)) {
+                                resultHandler.handle(Future.failedFuture(new OneSignalResponseException(errors.encodePrettily())));
+                            } else if (response.result().statusCode() == HttpResponseStatus.OK.code()) {
+                                resultHandler.handle(Future.succeededFuture(responseBody));
+                            } else {
+                                resultHandler.handle(Future.failedFuture(new OneSignalResponseException(responseBody.encodePrettily())));
+                            }
+                        } catch (DecodeException e) {
+                            resultHandler.handle(Future.failedFuture(e));
+                        }
+                    }else{
+                        resultHandler.handle(Future.failedFuture(response.cause()));
                     }
-                }catch(DecodeException e){
-                    resultHandler.handle(Future.failedFuture(e));
-                }
-            });
-        }).putHeader(HttpHeaders.CONTENT_TYPE, "application/json").putHeader(HttpHeaders.AUTHORIZATION, "Basic " + pushClientOptions.getRestApiKey()).end(content.encode());
+                });
     }
 
     private boolean isIgnoreAllPlayersAreNotSubscribed(JsonObject responseBody){

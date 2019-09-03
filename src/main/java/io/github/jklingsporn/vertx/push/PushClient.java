@@ -3,6 +3,7 @@ package io.github.jklingsporn.vertx.push;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.WebClient;
 
 /**
  * Created by jensklingsporn on 02.01.17.
@@ -49,6 +50,16 @@ public interface PushClient {
      */
     static PushClient create(Vertx vertx, PushClientOptions pushClientOptions){
         return new OneSignalPushClient(vertx, pushClientOptions);
+    }
+
+    /**
+     * @param webClient the WebClient to use for calling the OneSignal-API.
+     * @param pushClientOptions the options
+     * @return a PushClient
+     * @since 2.1
+     */
+    static PushClient create(WebClient webClient, PushClientOptions pushClientOptions){
+        return new OneSignalPushClient(webClient, pushClientOptions);
     }
 
     /**
