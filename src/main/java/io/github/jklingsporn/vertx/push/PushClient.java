@@ -1,5 +1,7 @@
 package io.github.jklingsporn.vertx.push;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
@@ -83,4 +85,14 @@ public interface PushClient {
      * @return SendWithOptionsStep
      */
     SendWithOptionsStep raw();
+
+    /**
+     * Cancel a notification of the given id.
+     * @param notificationId the id of the notification to cancel
+     * @param resultHandler the handler dealing with the result
+     * @since 2.2
+     */
+    void cancel(String notificationId, Handler<AsyncResult<JsonObject>> resultHandler);
+
+
 }

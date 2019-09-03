@@ -3,6 +3,9 @@ package io.github.jklingsporn.vertx.push.noop;
 import io.github.jklingsporn.vertx.push.AddHeadersStep;
 import io.github.jklingsporn.vertx.push.PushClient;
 import io.github.jklingsporn.vertx.push.SendWithOptionsStep;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -29,5 +32,10 @@ public class NoopPushClient implements PushClient{
     @Override
     public SendWithOptionsStep raw() {
         return NoopSendWithOptionsStep.getInstance();
+    }
+
+    @Override
+    public void cancel(String notificationId, Handler<AsyncResult<JsonObject>> resultHandler) {
+        resultHandler.handle(Future.succeededFuture(new JsonObject()));
     }
 }

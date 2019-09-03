@@ -5,11 +5,13 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
@@ -46,25 +48,29 @@ class OneSignalPushClient implements PushClient{
                 .post(Endpoints.PUSH)
                 .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/json")
                 .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Basic " + pushClientOptions.getRestApiKey())
-                .sendJsonObject(content,response -> {
-                    if(response.succeeded()){
-                        try {
-                            JsonObject responseBody = response.result().bodyAsJsonObject();
-                            JsonArray errors = responseBody.getJsonArray("errors");
-                            if (errors != null && !isIgnoreAllPlayersAreNotSubscribed(responseBody)) {
-                                resultHandler.handle(Future.failedFuture(new OneSignalResponseException(errors.encodePrettily())));
-                            } else if (response.result().statusCode() == HttpResponseStatus.OK.code()) {
-                                resultHandler.handle(Future.succeededFuture(responseBody));
-                            } else {
-                                resultHandler.handle(Future.failedFuture(new OneSignalResponseException(responseBody.encodePrettily())));
-                            }
-                        } catch (DecodeException e) {
-                            resultHandler.handle(Future.failedFuture(e));
-                        }
-                    }else{
-                        resultHandler.handle(Future.failedFuture(response.cause()));
+                .sendJsonObject(content, handleResult(resultHandler));
+    }
+
+    private Handler<AsyncResult<HttpResponse<Buffer>>> handleResult(Handler<AsyncResult<JsonObject>> resultHandler) {
+        return response -> {
+            if(response.succeeded()){
+                try {
+                    JsonObject responseBody = response.result().bodyAsJsonObject();
+                    JsonArray errors = responseBody.getJsonArray("errors");
+                    if (errors != null && !isIgnoreAllPlayersAreNotSubscribed(responseBody)) {
+                        resultHandler.handle(Future.failedFuture(new OneSignalResponseException(errors.encodePrettily())));
+                    } else if (response.result().statusCode() == HttpResponseStatus.OK.code()) {
+                        resultHandler.handle(Future.succeededFuture(responseBody));
+                    } else {
+                        resultHandler.handle(Future.failedFuture(new OneSignalResponseException(responseBody.encodePrettily())));
                     }
-                });
+                } catch (DecodeException e) {
+                    resultHandler.handle(Future.failedFuture(e));
+                }
+            }else{
+                resultHandler.handle(Future.failedFuture(response.cause()));
+            }
+        };
     }
 
     private boolean isIgnoreAllPlayersAreNotSubscribed(JsonObject responseBody){
@@ -94,5 +100,14 @@ class OneSignalPushClient implements PushClient{
                 return OneSignalPushClient.this;
             }
         });
+    }
+
+    @Override
+    public void cancel(String notificationId, Handler<AsyncResult<JsonObject>> resultHandler) {
+        this.webClient
+                .delete(String.format(Endpoints.CANCEL,notificationId,pushClientOptions.getAppId()))
+                .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/json")
+                .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Basic " + pushClientOptions.getRestApiKey())
+                .send(handleResult(resultHandler));
     }
 }

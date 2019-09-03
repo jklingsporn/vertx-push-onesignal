@@ -6,5 +6,5 @@ package io.github.jklingsporn.vertx.push;
 public class Endpoints {
 
     public static final String PUSH = "/api/v1/notifications";
-
+    public static final String CANCEL = "/api/v1/notifications/%s?app_id=%s";
 }
